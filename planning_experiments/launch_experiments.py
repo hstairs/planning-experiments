@@ -149,12 +149,14 @@ class Executor:
     
     def is_completed(self, job_infos: Tuple[str, str]):
         job_id = job_infos[0]
-        output = subprocess.check_output(f'qstat -f {job_id}', shell=True, universal_newlines=True)
-        if 'job_state = C' in output or 'Unknown Job Id' in output:
+        try:
+            output = subprocess.check_output(f'qstat -f {job_id}', shell=True, universal_newlines=True)
+            if 'job_state = C' in output or 'Unknown Job Id' in output:
+                return True
+            else:
+                return False
+        except:
             return True
-        else:
-            return False
-
     
     def execute_scripts(self, script_list: List[str], script2blob: dict, run_folder: str, blob_path: str):
         # Qsub logs setup
